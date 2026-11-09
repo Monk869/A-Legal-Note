@@ -24,10 +24,10 @@ const articles = [
   },
   {
     id: 2,
-    title: "test2",
+    title: "Test3",
     category: "Constitution",
     date: "October 2026",
-    readTime: "6 min read",
+    readTime: "10 min read",
     excerpt: "A starting point for thinking about constitutional rights, their purpose and the role they play in a democratic society.",
     featured: false,
     body: [
