@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Accessible articles and commentary on law, rights, courts and public policy." />
+  <meta name="theme-color" content="#172b3a" />
+  <title>The Legal Note — Law, clearly explained</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="topline"><span>INDEPENDENT LEGAL WRITING</span><span>IDEAS · RIGHTS · THE RULE OF LAW</span></div>
+
+  <header class="site-header">
+    <a class="brand" href="#home" aria-label="The Legal Note home">
+      <span class="brand-mark">L<span>N</span></span>
+      <span class="brand-copy"><strong>THE LEGAL NOTE</strong><small>Law, clearly explained.</small></span>
+    </a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Open navigation" aria-expanded="false">☰</button>
+    <nav class="main-nav" id="mainNav">
+      <a class="nav-link active" href="#home">Home</a>
+      <a class="nav-link" href="#articles">Articles</a>
+      <a class="nav-link" href="#topics">Topics</a>
+      <a class="nav-link" href="#about">About</a>
+      <a class="nav-link nav-contact" href="#contact">Get in touch <span>↗</span></a>
+    </nav>
+  </header>
+
+  <main id="home">
+    <section class="hero wrap">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="eyebrow-line"></span> A space for legal ideas</div>
+        <h1>Understanding the law.<br><em>One article at a time.</em></h1>
+        <p class="hero-description">Thoughtful writing on legal principles, landmark decisions, rights and the issues shaping our society.</p>
+        <div class="hero-actions">
+          <a class="button button-dark" href="#articles">Explore articles <span>→</span></a>
+          <a class="text-link" href="#about">A little about this journal <span>↗</span></a>
+        </div>
+      </div>
+      <div class="hero-art" aria-label="Decorative illustration of legal books and a column">
+        <div class="art-circle circle-one"></div><div class="art-circle circle-two"></div>
+        <div class="book-stack"><div class="book book-top"><span>THE LAW</span></div><div class="book book-mid"><span>JUSTICE &amp; RIGHTS</span></div><div class="book book-bottom"><span>LEGAL THOUGHT</span></div></div>
+        <div class="column-art"><div class="column-cap"></div><div class="column-shaft"></div><div class="column-base"></div></div>
+        <div class="art-caption">KNOWLEDGE · CONTEXT · CLARITY</div>
+      </div>
+    </section>
+
+    <section class="featured-section">
+      <div class="wrap featured-grid">
+        <div class="section-kicker"><span>01 / EDITOR'S PICK</span><span class="kicker-rule"></span></div>
+        <div class="featured-content" id="featuredArticle"></div>
+      </div>
+    </section>
+
+    <section class="articles-section wrap" id="articles">
+      <div class="section-heading">
+        <div><div class="eyebrow"><span class="eyebrow-line"></span> FROM THE JOURNAL</div><h2>Latest <em>articles.</em></h2></div>
+        <p>Ideas, explanations and perspectives for anyone curious about the law.</p>
+      </div>
+      <div class="article-tools">
+        <div class="filters" id="categoryFilters" aria-label="Filter articles by topic"></div>
+        <label class="search-box"><span aria-hidden="true">⌕</span><input type="search" id="searchInput" placeholder="Search articles..." aria-label="Search articles" /></label>
+      </div>
+      <div class="article-grid" id="articleGrid"></div>
+      <p class="empty-state" id="emptyState" hidden>No articles match that search. Try another keyword or topic.</p>
+    </section>
+
+    <section class="topics-section" id="topics">
+      <div class="wrap topics-inner">
+        <div><div class="eyebrow eyebrow-light"><span class="eyebrow-line"></span> EXPLORE BY SUBJECT</div><h2>Follow the areas<br /><em>that interest you.</em></h2></div>
+        <div class="topic-list" id="topicList"></div>
+      </div>
+    </section>
+
+    <section class="about-section wrap" id="about">
+      <div class="about-number">02</div>
+      <div class="about-title"><div class="eyebrow"><span class="eyebrow-line"></span> ABOUT THE JOURNAL</div><h2>Law is for<br /><em>everyone.</em></h2></div>
+      <div class="about-copy">
+        <p class="about-lead">The Legal Note is an independent space for exploring the law beyond textbooks and courtrooms.</p>
+        <p>Here, complex ideas are made easier to approach through explainers, case discussions, commentary and reading notes. The aim is simple: encourage curiosity, informed discussion and a better understanding of how law connects with everyday life.</p>
+        <a href="#contact" class="text-link">Get in touch <span>↗</span></a>
+      </div>
+    </section>
+
+    <section class="contact-section" id="contact">
+      <div class="wrap contact-inner">
+        <div><div class="eyebrow eyebrow-light"><span class="eyebrow-line"></span> START A CONVERSATION</div><h2>Have a thought<br /><em>to share?</em></h2></div>
+        <div class="contact-copy"><p>Suggestions, thoughtful disagreements and article ideas are always welcome.</p><a class="button button-light" href="mailto:hello@example.com">Write an email <span>↗</span></a><small>Replace hello@example.com with your email address in index.html.</small></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-top"><a class="brand brand-footer" href="#home"><span class="brand-mark">L<span>N</span></span><span class="brand-copy"><strong>THE LEGAL NOTE</strong><small>Law, clearly explained.</small></span></a><p>Independent writing. Informed perspectives.</p><a href="#home" class="back-top">BACK TO TOP ↑</a></div>
+    <div class="wrap footer-bottom"><span>© <span id="year"></span> The Legal Note</span><span>For education and general information only.</span></div>
+  </footer>
+
+  <div class="reader-overlay" id="readerOverlay" aria-hidden="true">
+    <article class="reader-panel" role="dialog" aria-modal="true" aria-labelledby="readerTitle">
+      <button class="reader-close" id="readerClose" aria-label="Close article">×</button>
+      <div class="reader-meta" id="readerMeta"></div>
+      <h2 id="readerTitle"></h2>
+      <p class="reader-excerpt" id="readerExcerpt"></p>
+      <div class="reader-body" id="readerBody"></div>
+      <div class="reader-disclaimer">This article is for general educational information only. It is not legal advice and does not create a lawyer-client relationship.</div>
+    </article>
+  </div>
+
+  <script src="articles.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
