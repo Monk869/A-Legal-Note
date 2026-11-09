@@ -24,7 +24,7 @@ const articles = [
   },
   {
     id: 2,
-    title: "Draft",
+    title: "test2",
     category: "Constitution",
     date: "October 2026",
     readTime: "6 min read",
