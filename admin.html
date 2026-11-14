@@ -1,0 +1,445 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin | A Legal Note</title>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f7f5f0;color:#26343b;font-family:Arial,sans-serif}
+[hidden]{display:none!important}
+header{background:#172b3a;color:white;padding:20px 6%;display:flex;justify-content:space-between;align-items:center}
+header a{color:#e3c79e;text-decoration:none}
+h1,h2,h3{font-family:Georgia,serif;font-weight:normal}
+main{max-width:1050px;margin:45px auto;padding:0 20px}
+h1{font-size:36px}
+.panel{background:white;border:1px solid #e5e0d6;padding:25px;border-radius:6px;margin-bottom:22px}
+label{display:block;font-size:12px;font-weight:bold;margin:15px 0 7px}
+input,textarea,select{width:100%;padding:12px;border:1px solid #d9d5cc;border-radius:4px;font:14px Arial}
+textarea{min-height:180px;resize:vertical;line-height:1.7}
+button{padding:11px 16px;border:0;border-radius:4px;background:#172b3a;color:white;font-weight:bold;cursor:pointer}
+button:hover{opacity:.85}
+.secondary{background:#eee9df;color:#26343b}
+.danger{background:#a7433d}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.message{font-size:13px;color:#34734e;margin-top:12px}
+.error{color:#a7433d}
+.row{padding:16px 0;border-top:1px solid #eee;display:flex;justify-content:space-between;gap:15px;align-items:center}
+.row h3{margin:0 0 6px;font-size:19px}
+.small{font-size:11px;color:#777}
+.badge{font-size:10px;padding:4px 8px;background:#e6f2e8;color:#27623c;border-radius:20px}
+.badge.draft{background:#f2eee5;color:#816640}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.topline{color:#cbb18b;font-size:10px;letter-spacing:2px}
+@media(max-width:650px){
+ main{margin:25px auto}
+ .grid{grid-template-columns:1fr}
+ .row{align-items:flex-start;flex-direction:column}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <strong>A LEGAL NOTE · ADMIN</strong>
+  <a href="index.html">View Website ↗</a>
+</header>
+
+<main>
+
+<section class="panel" id="login">
+  <div class="topline">PRIVATE ADMINISTRATION</div>
+  <h1>Welcome back.</h1>
+  <p>Sign in to manage your legal publication.</p>
+
+  <form id="loginForm">
+    <label>Email address</label>
+    <input id="email" type="email" required>
+
+    <label>Password</label>
+    <input id="password" type="password" required>
+
+    <div class="actions">
+      <button type="submit">Sign in</button>
+    </div>
+  </form>
+  <p id="loginMessage" class="message"></p>
+</section>
+
+<section id="dashboard" hidden>
+
+  <div class="panel">
+    <div class="topline">YOUR PUBLICATION</div>
+    <h1>Article Dashboard</h1>
+    <p id="welcome" class="small"></p>
+
+    <div class="grid">
+      <div>
+        <strong id="total">0</strong>
+        <p class="small">Total articles</p>
+      </div>
+      <div>
+        <strong id="published">0</strong>
+        <p class="small">Published articles</p>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="newArticle">+ Write new article</button>
+      <button id="refresh" class="secondary">Refresh</button>
+      <button id="logout" class="secondary">Sign out</button>
+    </div>
+  </div>
+
+  <section class="panel">
+    <h2>All articles</h2>
+    <div id="articleList">Loading articles...</div>
+    <p id="listMessage" class="message"></p>
+  </section>
+
+  <section class="panel" id="editor" hidden>
+    <div class="topline">ARTICLE EDITOR</div>
+    <h2 id="formHeading">Write a new article</h2>
+
+    <form id="articleForm">
+      <label>Article title</label>
+      <input id="title" maxlength="180" required>
+
+      <div class="grid">
+        <div>
+          <label>Category</label>
+          <input id="category" list="categoryOptions" required>
+          <datalist id="categoryOptions">
+            <option>Constitutional Law</option>
+            <option>Criminal Law</option>
+            <option>Civil Law</option>
+            <option>Corporate Law</option>
+            <option>Case Laws</option>
+            <option>Legal News</option>
+            <option>Legal Research</option>
+            <option>Legal Concepts</option>
+          </datalist>
+        </div>
+
+        <div>
+          <label>Article date</label>
+          <input id="date" placeholder="November 2026">
+        </div>
+      </div>
+
+      <label>Short description</label>
+      <textarea id="excerpt" rows="3" required></textarea>
+
+      <label>Full article</label>
+      <textarea id="body" required placeholder="Write your article here. Leave a blank line between paragraphs."></textarea>
+
+      <label>
+        <input type="checkbox" id="featured" style="width:auto">
+        Feature on homepage
+      </label>
+
+      <div class="actions">
+        <button type="button" id="saveDraft" class="secondary">Save draft</button>
+        <button type="button" id="publish">Publish article</button>
+        <button type="button" id="cancel" class="danger">Cancel</button>
+      </div>
+
+      <p id="editorMessage" class="message"></p>
+    </form>
+  </section>
+
+</section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+
+<script>
+const cfg = window.LEGAL_SITE_CONFIG;
+let db;
+let articles = [];
+let editingId = null;
+
+const $ = id => document.getElementById(id);
+
+function message(id,text,error=false){
+  $(id).textContent=text;
+  $(id).className=error?"message error":"message";
+}
+
+function escapeHTML(value){
+  return String(value ?? "").replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",
+    '"':"&quot;","'":"&#039;"
+  })[c]);
+}
+
+function readingTime(text){
+  const words=text.trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1,Math.ceil(words/220))+" min read";
+}
+
+function slugify(text){
+  return text.toLowerCase()
+    .replace(/[^a-z0-9]+/g,"-")
+    .replace(/^-|-$/g,"");
+}
+
+function showDashboard(user){
+  $("login").hidden=true;
+  $("dashboard").hidden=false;
+  $("welcome").textContent="Signed in as "+user.email;
+}
+
+async function loadArticles(){
+  message("listMessage","");
+
+  const {data,error}=await db
+    .from("articles")
+    .select("*")
+    .order("updated_at",{ascending:false});
+
+  if(error){
+    message("listMessage",error.message,true);
+    return;
+  }
+
+  articles=data||[];
+
+  $("total").textContent=articles.length;
+  $("published").textContent=articles.filter(a=>a.published).length;
+
+  if(!articles.length){
+    $("articleList").innerHTML="<p>No articles yet. Start writing!</p>";
+    return;
+  }
+
+  $("articleList").innerHTML=articles.map(a=>`
+    <div class="row">
+      <div>
+        <h3>${escapeHTML(a.title)}</h3>
+        <span class="small">${escapeHTML(a.category)} · ${escapeHTML(a.date)}</span>
+        <span class="badge ${a.published?"":"draft"}">
+          ${a.published?"Published":"Draft"}
+        </span>
+      </div>
+      <div class="actions">
+        <button class="secondary" data-edit="${a.id}">Edit</button>
+        <button class="danger" data-delete="${a.id}">Delete</button>
+      </div>
+    </div>
+  `).join("");
+
+  document.querySelectorAll("[data-edit]").forEach(b=>{
+    b.onclick=()=>editArticle(b.dataset.edit);
+  });
+
+  document.querySelectorAll("[data-delete]").forEach(b=>{
+    b.onclick=()=>deleteArticle(b.dataset.delete);
+  });
+}
+
+function resetForm(){
+  editingId=null;
+  $("articleForm").reset();
+  $("date").value=new Date().toLocaleDateString(
+    "en",{month:"long",year:"numeric"}
+  );
+  $("formHeading").textContent="Write a new article";
+  message("editorMessage","");
+}
+
+function editArticle(id){
+  const a=articles.find(x=>String(x.id)===String(id));
+  if(!a)return;
+
+  editingId=a.id;
+
+  $("title").value=a.title;
+  $("category").value=a.category;
+  $("date").value=a.date;
+  $("excerpt").value=a.excerpt;
+  $("body").value=a.body;
+  $("featured").checked=a.featured;
+
+  $("formHeading").textContent="Edit article";
+  $("editor").hidden=false;
+  $("editor").scrollIntoView({behavior:"smooth"});
+}
+
+async function saveArticle(published){
+  const title=$("title").value.trim();
+  const category=$("category").value.trim();
+  const excerpt=$("excerpt").value.trim();
+  const body=$("body").value.trim();
+
+  if(!title||!category||!excerpt||!body){
+    message("editorMessage","Please fill in all required fields.",true);
+    return;
+  }
+
+  const payload={
+    title,
+    category,
+    slug:slugify(title),
+    excerpt,
+    body,
+    date:$("date").value.trim() || new Date().toLocaleDateString("en",{month:"long",year:"numeric"}),
+    read_time:readingTime(body),
+    featured:$("featured").checked,
+    published,
+    updated_at:new Date().toISOString()
+  };
+
+  message("editorMessage","Saving...");
+
+  try{
+    if(payload.featured){
+      const {error}=await db.from("articles")
+        .update({featured:false})
+        .eq("featured",true);
+
+      if(error)throw error;
+    }
+
+    let result;
+
+    if(editingId){
+      result=await db.from("articles")
+        .update(payload)
+        .eq("id",editingId);
+    }else{
+      result=await db.from("articles").insert(payload);
+    }
+
+    if(result.error)throw result.error;
+
+    await loadArticles();
+    resetForm();
+    $("editor").hidden=true;
+
+    message("listMessage",published?
+      "Article published successfully!":
+      "Draft saved successfully!"
+    );
+
+  }catch(error){
+    message("editorMessage",error.message,true);
+  }
+}
+
+async function deleteArticle(id){
+  const a=articles.find(x=>String(x.id)===String(id));
+  if(!a||!confirm("Delete this article permanently?"))return;
+
+  const {error}=await db.from("articles")
+    .delete().eq("id",id);
+
+  if(error){
+    message("listMessage",error.message,true);
+    return;
+  }
+
+  await loadArticles();
+  message("listMessage","Article deleted.");
+}
+
+async function initialize(){
+  if(!window.supabase || !cfg ||
+     !cfg.SUPABASE_URL ||
+     !cfg.SUPABASE_ANON_KEY ||
+     !cfg.ADMIN_EMAIL){
+    message("loginMessage","Supabase configuration is missing.",true);
+    return;
+  }
+
+  db=window.supabase.createClient(
+    cfg.SUPABASE_URL,
+    cfg.SUPABASE_ANON_KEY
+  );
+
+  const {data,error}=await db.auth.getSession();
+
+  if(error){
+    message("loginMessage",error.message,true);
+    return;
+  }
+
+  if(data.session){
+    const email=data.session.user.email||"";
+
+    if(email.toLowerCase()!==cfg.ADMIN_EMAIL.toLowerCase()){
+      await db.auth.signOut();
+      message("loginMessage","This account is not the site administrator.",true);
+    }else{
+      showDashboard(data.session.user);
+      await loadArticles();
+    }
+  }
+
+  db.auth.onAuthStateChange(async(event,session)=>{
+    if(event==="SIGNED_OUT"){
+      location.reload();
+    }
+  });
+}
+
+$("loginForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+
+  if(!db){
+    message("loginMessage","Please check Supabase configuration.",true);
+    return;
+  }
+
+  message("loginMessage","Signing in...");
+
+  const {data,error}=await db.auth.signInWithPassword({
+    email:$("email").value.trim(),
+    password:$("password").value
+  });
+
+  if(error){
+    message("loginMessage",error.message,true);
+    return;
+  }
+
+  if(data.user.email.toLowerCase()!==cfg.ADMIN_EMAIL.toLowerCase()){
+    await db.auth.signOut();
+    message("loginMessage","Not authorised as site administrator.",true);
+    return;
+  }
+
+  showDashboard(data.user);
+  await loadArticles();
+});
+
+$("logout").onclick=async()=>{
+  await db.auth.signOut();
+};
+
+$("newArticle").onclick=()=>{
+  resetForm();
+  $("editor").hidden=false;
+  $("editor").scrollIntoView({behavior:"smooth"});
+};
+
+$("refresh").onclick=loadArticles;
+$("cancel").onclick=()=>{
+  $("editor").hidden=true;
+  resetForm();
+};
+
+$("saveDraft").onclick=()=>saveArticle(false);
+$("publish").onclick=()=>saveArticle(true);
+
+initialize();
+</script>
+
+</body>
+</html>
