@@ -2,115 +2,341 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A Legal Note | Independent Legal Publication</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Georgia, serif;
-      background: #f8f6f1;
-      color: #192c3a;
-    }
-    header {
-      background: #192c3a;
-      color: white;
-      padding: 25px 8%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    header a {
-      color: white;
-      text-decoration: none;
-      margin-left: 22px;
-      font: 13px Arial, sans-serif;
-    }
-    .logo {
-      font-size: 22px;
-      letter-spacing: 2px;
-    }
-    .hero {
-      text-align: center;
-      padding: 110px 20px;
-    }
-    .hero small {
-      color: #a77e4e;
-      letter-spacing: 3px;
-      font: 12px Arial, sans-serif;
-    }
-    h1 {
-      font-size: clamp(42px, 7vw, 70px);
-      line-height: 1.15;
-      margin: 25px 0;
-    }
-    h1 em { color: #b38b5b; }
-    .hero p {
-      max-width: 600px;
-      margin: 0 auto;
-      color: #667078;
-      font: 16px/1.8 Arial, sans-serif;
-    }
-    .section {
-      background: #eee9df;
-      padding: 65px 20px;
-      text-align: center;
-    }
-    .section h2 { font-size: 32px; }
-    .section p {
-      font: 14px/1.8 Arial, sans-serif;
-      color: #667078;
-    }
-    footer {
-      background: #192c3a;
-      color: #ddd;
-      text-align: center;
-      padding: 25px;
-      font: 12px Arial, sans-serif;
-    }
-    @media(max-width:600px) {
-      header { padding: 20px; }
-      header a { margin-left: 8px; font-size: 11px; }
-      .logo { font-size: 17px; }
-      .hero { padding: 80px 18px; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="A Legal Note — Independent legal publication, articles, case analysis and legal commentary.">
+<title>A Legal Note | Independent Legal Publication</title>
+<style>
+:root {
+  --navy:#172b3a;
+  --gold:#b58b5b;
+  --paper:#f8f6f1;
+  --ink:#26343b;
+  --muted:#727b80;
+}
+* {box-sizing:border-box}
+html {scroll-behavior:smooth}
+body {
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+}
+header {
+  padding:22px 7%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:white;
+  border-bottom:1px solid #e9e5dc;
+}
+.logo {
+  font-family:Georgia,serif;
+  font-size:23px;
+  letter-spacing:2px;
+  color:var(--navy);
+  font-weight:bold;
+}
+nav {display:flex;gap:25px}
+nav a {
+  text-decoration:none;
+  color:var(--ink);
+  font-size:13px;
+}
+nav a:hover {color:var(--gold)}
+.hero {
+  padding:115px 20px;
+  text-align:center;
+  background:var(--navy);
+  color:white;
+}
+.eyebrow {
+  color:#d6b78e;
+  font-size:11px;
+  letter-spacing:3px;
+}
+h1 {
+  font:normal clamp(42px,7vw,76px)/1.15 Georgia,serif;
+  margin:25px 0;
+}
+h1 em {color:#d5b184}
+.hero p {
+  max-width:650px;
+  margin:auto;
+  color:#d3dadd;
+  line-height:1.9;
+  font-size:15px;
+}
+.button {
+  display:inline-block;
+  margin-top:30px;
+  padding:14px 25px;
+  background:var(--gold);
+  color:white;
+  text-decoration:none;
+  font-size:12px;
+}
+.container {
+  width:min(1100px,88%);
+  margin:auto;
+}
+.section {padding:85px 0}
+.section-heading {
+  font:normal 42px Georgia,serif;
+  margin:10px 0 15px;
+}
+.intro {
+  color:var(--muted);
+  line-height:1.9;
+  max-width:650px;
+  font-size:14px;
+}
+.eyebrow-dark {
+  color:var(--gold);
+  letter-spacing:2px;
+  font-size:10px;
+  font-weight:bold;
+}
+.articles {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:22px;
+  margin-top:40px;
+}
+.article {
+  background:white;
+  padding:28px;
+  border:1px solid #e9e5dc;
+  min-height:240px;
+}
+.tag {
+  color:var(--gold);
+  font-size:10px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+}
+.article h3 {
+  font:normal 23px/1.35 Georgia,serif;
+  margin:20px 0 12px;
+}
+.article p {
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.8;
+}
+.read {
+  color:var(--navy);
+  font-weight:bold;
+  font-size:12px;
+  margin-top:18px;
+  display:inline-block;
+}
+.topics {
+  background:#eee9df;
+}
+.topic-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
+  margin-top:35px;
+}
+.topic {
+  background:white;
+  padding:22px;
+  font:18px Georgia,serif;
+  border-left:3px solid var(--gold);
+}
+.about {
+  background:white;
+  text-align:center;
+}
+.about p {
+  max-width:700px;
+  margin:20px auto;
+  color:var(--muted);
+  line-height:2;
+  font-size:14px;
+}
+.contact {
+  background:var(--navy);
+  color:white;
+  text-align:center;
+}
+.contact p {
+  color:#d0d6d8;
+  line-height:1.8;
+}
+.contact a {color:#d5b184}
+footer {
+  padding:25px;
+  background:#10212d;
+  color:#aeb9bc;
+  font-size:11px;
+  text-align:center;
+  line-height:1.8;
+}
+.menu {
+  display:none;
+  background:none;
+  border:0;
+  font-size:22px;
+  color:var(--navy);
+}
+@media(max-width:750px) {
+  header {padding:18px 6%}
+  .menu {display:block}
+  nav {
+    display:none;
+    position:absolute;
+    top:70px;
+    left:0;
+    width:100%;
+    padding:22px;
+    background:white;
+    flex-direction:column;
+    z-index:5;
+  }
+  nav.open {display:flex}
+  .articles,.topic-grid {grid-template-columns:1fr}
+  .hero {padding:85px 20px}
+  .section {padding:60px 0}
+  .section-heading {font-size:34px}
+}
+</style>
 </head>
 <body>
 
-  <header>
-    <div class="logo">A LEGAL NOTE</div>
-    <nav>
-      <a href="#home">Home</a>
-      <a href="#about">About</a>
-    </nav>
-  </header>
+<header>
+  <div class="logo">A LEGAL NOTE.</div>
+  <button class="menu" id="menu" aria-label="Toggle navigation">☰</button>
+  <nav id="nav">
+    <a href="#home">Home</a>
+    <a href="#articles">Articles</a>
+    <a href="#topics">Topics</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
 
-  <main>
-    <section class="hero" id="home">
-      <small>AN INDEPENDENT LEGAL PUBLICATION</small>
-      <h1>Understanding Law.<br>
-      <em>Beyond the Books.</em></h1>
+<main>
+<section class="hero" id="home">
+  <div class="eyebrow">AN INDEPENDENT LEGAL PUBLICATION</div>
+  <h1>Law. Ideas.<br><em>Perspectives.</em></h1>
+  <p>
+    Exploring the law through thoughtful articles,
+    case analysis, legal developments and informed
+    commentary. A space for curious minds and
+    those who believe that understanding law matters.
+  </p>
+  <a href="#articles" class="button">EXPLORE THE JOURNAL →</a>
+</section>
+
+<section class="section container" id="articles">
+  <div class="eyebrow-dark">THE JOURNAL</div>
+  <h2 class="section-heading">Ideas worth exploring.</h2>
+  <p class="intro">
+    Discover articles, legal analysis and perspectives
+    covering the principles and developments that
+    shape our understanding of law.
+  </p>
+
+  <div class="articles">
+    <article class="article">
+      <div class="tag">Constitutional Law</div>
+      <h3>Understanding Constitutional Values</h3>
       <p>
-        A space dedicated to legal knowledge, thoughtful
-        analysis, landmark judgments, constitutional values
-        and developments in the world of law.
+        An introduction to the values and principles
+        that form the foundation of a constitutional
+        democracy.
       </p>
-    </section>
+      <span class="read">Coming soon →</span>
+    </article>
 
-    <section class="section" id="about">
-      <h2>Welcome to A Legal Note.</h2>
+    <article class="article">
+      <div class="tag">Case Analysis</div>
+      <h3>Reading and Understanding Judgments</h3>
       <p>
-        Making law easier to understand, one article at a time.
+        Exploring how judicial reasoning, legal
+        principles and precedents can be understood.
       </p>
-      <p>Our articles and analysis are for educational purposes.</p>
-    </section>
-  </main>
+      <span class="read">Coming soon →</span>
+    </article>
 
-  <footer>
-    © 2026 A Legal Note · Independent Legal Publication
-  </footer>
+    <article class="article">
+      <div class="tag">Legal Commentary</div>
+      <h3>Law in a Changing Society</h3>
+      <p>
+        Reflecting on the relationship between
+        legal institutions, society and contemporary
+        developments.
+      </p>
+      <span class="read">Coming soon →</span>
+    </article>
+  </div>
+</section>
+
+<section class="section topics">
+  <div class="container" id="topics">
+    <div class="eyebrow-dark">EXPLORE SUBJECTS</div>
+    <h2 class="section-heading">Explore by topic.</h2>
+    <div class="topic-grid">
+      <div class="topic">Constitutional Law</div>
+      <div class="topic">Criminal Law</div>
+      <div class="topic">Civil Law</div>
+      <div class="topic">Case Laws</div>
+      <div class="topic">Legal News</div>
+      <div class="topic">Legal Research</div>
+    </div>
+  </div>
+</section>
+
+<section class="section about" id="about">
+  <div class="container">
+    <div class="eyebrow-dark">ABOUT THE PUBLICATION</div>
+    <h2 class="section-heading">A space for legal thought.</h2>
+    <p>
+      A Legal Note is an independent legal publication
+      dedicated to making legal ideas approachable.
+      Through articles, case discussions, legal
+      commentary and research, our aim is to encourage
+      informed conversations about law and society.
+    </p>
+  </div>
+</section>
+
+<section class="section contact" id="contact">
+  <div class="container">
+    <div class="eyebrow">GET IN TOUCH</div>
+    <h2 class="section-heading">Let's start a conversation.</h2>
+    <p>
+      Have an article idea, suggestion or perspective
+      to share? We'd be glad to hear from you.
+    </p>
+    <p>Contact details will be added soon.</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  © <span id="year"></span> A Legal Note.
+  Independent Legal Publication.<br>
+  Articles are for general educational information,
+  not legal advice.
+</footer>
+
+<script>
+document.getElementById("year").textContent =
+  new Date().getFullYear();
+
+document.getElementById("menu").addEventListener("click", () => {
+  document.getElementById("nav").classList.toggle("open");
+});
+document.querySelectorAll("#nav a").forEach(link => {
+  link.addEventListener("click", () => {
+    document.getElementById("nav").classList.remove("open");
+  });
+});
+</script>
 
 </body>
 </html>
