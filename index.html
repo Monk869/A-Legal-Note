@@ -590,19 +590,19 @@ function showCategory(category) {
 }
 
 topicButtons.forEach(button => {
+
   button.addEventListener("click", () => {
-    const category =
-      const category = button.dataset.category || "All";
-        ? "All"
-        : button.textContent.trim();
+
+    const category = button.dataset.category || "All";
 
     showCategory(category);
 
     document.getElementById("articles")
       .scrollIntoView({ behavior: "smooth" });
-  });
-});
 
+  });
+
+});
 showCategory("All");
 })();
 </script>
