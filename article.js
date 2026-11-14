@@ -45,7 +45,7 @@ const articles = [
 
     date: "November 2026",
 
-    readTime: "4 min read",
+    readTime: "6 min read",
 
     featured: false,
 
