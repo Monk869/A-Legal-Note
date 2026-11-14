@@ -268,8 +268,6 @@ footer {
 
     <div class="topic-grid">
 
-<div class="topic-grid">
-
   <button class="topic topic-filter" data-category="All">
     All Articles
   </button>
@@ -544,14 +542,6 @@ let activeCategory = "All";
 
 const topicGrid = document.querySelector(".topic-grid");
 
-const allButton = document.createElement("button");
-allButton.className = "topic";
-allButton.textContent = "All Articles";
-allButton.style.cursor = "pointer";
-allButton.style.border = "none";
-allButton.style.textAlign = "left";
-topicGrid.prepend(allButton);
-
 const topicButtons = document.querySelectorAll(".topic");
 
 function showCategory(category) {
@@ -566,7 +556,7 @@ function showCategory(category) {
 
   topicButtons.forEach(button => {
     button.style.borderLeft =
-      button.textContent.trim().toLowerCase() === category.toLowerCase()
+      button.dataset.category.toLowerCase() === category.toLowerCase()
         ? "4px solid #b58b5b"
         : "3px solid #b58b5b";
   });
@@ -602,7 +592,7 @@ function showCategory(category) {
 topicButtons.forEach(button => {
   button.addEventListener("click", () => {
     const category =
-      button.textContent.trim() === "All Articles"
+      const category = button.dataset.category || "All";
         ? "All"
         : button.textContent.trim();
 
