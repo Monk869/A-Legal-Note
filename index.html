@@ -268,5 +268,44 @@ document.querySelectorAll("#nav a").forEach(link => {
 });
 </script>
 
+<script src="articles.js"></script>
+
+<script>
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  })[c]);
+}
+
+const articleGrid = document.getElementById("articleGrid");
+
+const publishedArticles = articles
+  .filter(article => article.published !== false)
+  .sort((a, b) => Number(b.featured) - Number(a.featured));
+
+articleGrid.innerHTML = publishedArticles.length
+  ? publishedArticles.map(article => `
+    <details class="article">
+      <summary>
+        <div class="tag">${escapeHTML(article.category)}</div>
+        <h3>${escapeHTML(article.title)}</h3>
+        <p>${escapeHTML(article.excerpt)}</p>
+        <span class="read">Read full article ↓</span>
+      </summary>
+
+      <div class="article-content">
+        ${(Array.isArray(article.body) ? article.body : [article.body])
+          .map(paragraph => `<p>${escapeHTML(paragraph)}</p>`)
+          .join("")}
+        <small>${escapeHTML(article.date)} · ${escapeHTML(article.readTime)}</small>
+      </div>
+    </details>
+  `).join("")
+  : "<p>No articles published yet.</p>";
+</script>
 </body>
 </html>
