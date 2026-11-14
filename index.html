@@ -145,6 +145,20 @@ h1 em {color:#d5b184}
   padding:22px;
   font:18px Georgia,serif;
   border-left:3px solid var(--gold);
+} 
+.topic-filter {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-family: Georgia, serif;
+  color: var(--ink);
+  transition: .2s;
+}
+
+.topic-filter:hover,
+.topic-filter.active {
+  background: var(--navy);
+  color: white;
 }
 .about {
   background:white;
@@ -253,16 +267,50 @@ footer {
     <h2 class="section-heading">Explore by topic.</h2>
 
     <div class="topic-grid">
-      <div class="topic">Constitutional Law</div>
-      <div class="topic">Criminal Law</div>
-      <div class="topic">Civil Law</div>
-      <div class="topic">Case Laws</div>
-      <div class="topic">Legal News</div>
-      <div class="topic">Legal Research</div>
-      <div class="topic">Corporate Law</div>
-      <div class="topic">Technology & Law</div>
-      <div class="topic">Legal Opinions</div>
-    </div>
+
+<div class="topic-grid">
+
+  <button class="topic topic-filter" data-category="All">
+    All Articles
+  </button>
+
+  <button class="topic topic-filter" data-category="Constitutional Law">
+    Constitutional Law
+  </button>
+
+  <button class="topic topic-filter" data-category="Criminal Law">
+    Criminal Law
+  </button>
+
+  <button class="topic topic-filter" data-category="Civil Law">
+    Civil Law
+  </button>
+
+  <button class="topic topic-filter" data-category="Case Laws">
+    Case Laws
+  </button>
+
+  <button class="topic topic-filter" data-category="Legal News">
+    Legal News
+  </button>
+
+  <button class="topic topic-filter" data-category="Legal Research">
+    Legal Research
+  </button>
+
+  <button class="topic topic-filter" data-category="Corporate Law">
+    Corporate Law
+  </button>
+
+  <button class="topic topic-filter" data-category="Technology & Law">
+    Technology & Law
+  </button>
+
+  <button class="topic topic-filter" data-category="Legal Opinions">
+    Legal Opinions
+  </button>
+
+</div>
   </div>
 </section>
 
@@ -417,10 +465,25 @@ document.querySelectorAll("#nav a").forEach(link => {
   if (allArticles.length === 0) {
     grid.innerHTML = "<p>No articles published yet.</p>";
     return;
+  } 
+let activeCategory = "All";
+
+function renderArticles() {
+
+  const visibleArticles = activeCategory === "All"
+    ? allArticles
+    : allArticles.filter(article =>
+        String(article.category).toLowerCase() ===
+        activeCategory.toLowerCase()
+      );
+
+  if (!visibleArticles.length) {
+    grid.innerHTML =
+      "<p>No articles available in this subject yet.</p>";
+    return;
   }
 
-  // Display articles
-  grid.innerHTML = allArticles.map(article => {
+  grid.innerHTML = visibleArticles.map(article => {
 
     const paragraphs = Array.isArray(article.body)
       ? article.body
@@ -428,40 +491,129 @@ document.querySelectorAll("#nav a").forEach(link => {
           .split(/\n\s*\n/)
           .filter(Boolean);
 
-    const date = article.date || "";
-    const readTime =
-      article.read_time || article.readTime || "";
-
     return `
       <article class="article">
-
         <div class="tag">
           ${escapeHTML(article.category)}
         </div>
 
         <h3>${escapeHTML(article.title)}</h3>
-
         <p>${escapeHTML(article.excerpt)}</p>
 
         <small>
-          ${escapeHTML(date)} · ${escapeHTML(readTime)}
+          ${escapeHTML(article.date || "")} ·
+          ${escapeHTML(article.read_time || article.readTime || "")}
         </small>
 
         <details>
           <summary class="read">Read full article →</summary>
-
           <div class="article-content">
             ${paragraphs.map(p =>
               `<p>${escapeHTML(p)}</p>`
             ).join("")}
           </div>
         </details>
-
       </article>
     `;
-
   }).join("");
+}
 
+document.querySelectorAll(".topic-filter").forEach(button => {
+
+  button.addEventListener("click", () => {
+
+    activeCategory = button.dataset.category;
+
+    document.querySelectorAll(".topic-filter")
+      .forEach(item => item.classList.remove("active"));
+
+    button.classList.add("active");
+
+    renderArticles();
+
+    document.getElementById("articles")
+      .scrollIntoView({behavior:"smooth"});
+  });
+
+});
+
+renderArticles();
+
+// Make subject boxes clickable
+let activeCategory = "All";
+
+const topicGrid = document.querySelector(".topic-grid");
+
+const allButton = document.createElement("button");
+allButton.className = "topic";
+allButton.textContent = "All Articles";
+allButton.style.cursor = "pointer";
+allButton.style.border = "none";
+allButton.style.textAlign = "left";
+topicGrid.prepend(allButton);
+
+const topicButtons = document.querySelectorAll(".topic");
+
+function showCategory(category) {
+  activeCategory = category;
+
+  const filtered = category === "All"
+    ? allArticles
+    : allArticles.filter(article =>
+        String(article.category).trim().toLowerCase() ===
+        category.trim().toLowerCase()
+      );
+
+  topicButtons.forEach(button => {
+    button.style.borderLeft =
+      button.textContent.trim().toLowerCase() === category.toLowerCase()
+        ? "4px solid #b58b5b"
+        : "3px solid #b58b5b";
+  });
+
+  if (!filtered.length) {
+    grid.innerHTML =
+      "<p>No articles available in this subject yet.</p>";
+    return;
+  }
+
+  grid.innerHTML = filtered.map(article => {
+    const paragraphs = Array.isArray(article.body)
+      ? article.body
+      : String(article.body || "").split(/\n\s*\n/).filter(Boolean);
+
+    return `
+      <article class="article">
+        <div class="tag">${escapeHTML(article.category)}</div>
+        <h3>${escapeHTML(article.title)}</h3>
+        <p>${escapeHTML(article.excerpt)}</p>
+        <small>${escapeHTML(article.date || "")}</small>
+        <details>
+          <summary class="read">Read full article →</summary>
+          ${paragraphs.map(p =>
+            `<p>${escapeHTML(p)}</p>`
+          ).join("")}
+        </details>
+      </article>
+    `;
+  }).join("");
+}
+
+topicButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    const category =
+      button.textContent.trim() === "All Articles"
+        ? "All"
+        : button.textContent.trim();
+
+    showCategory(category);
+
+    document.getElementById("articles")
+      .scrollIntoView({ behavior: "smooth" });
+  });
+});
+
+showCategory("All");
 })();
 </script>
 </body>
