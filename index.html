@@ -331,44 +331,138 @@ document.querySelectorAll("#nav a").forEach(link => {
 });
 </script>
 
+<!-- Supabase library -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Your project configuration -->
+<script src="config.js"></script>
+
+<!-- Temporary sample article backup -->
 <script src="articles.js"></script>
 
 <script>
-function escapeHTML(value) {
-  return String(value ?? "").replace(/[&<>"']/g, c => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;"
-  })[c]);
-}
+(async function () {
 
-const articleGrid = document.getElementById("articleGrid");
+  const grid = document.getElementById("articleGrid");
+  const cfg = window.LEGAL_SITE_CONFIG;
 
-const publishedArticles = articles
-  .filter(article => article.published !== false)
-  .sort((a, b) => Number(b.featured) - Number(a.featured));
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, c => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    })[c]);
+  }
 
-articleGrid.innerHTML = publishedArticles.length
-  ? publishedArticles.map(article => `
-    <details class="article">
-      <summary>
-        <div class="tag">${escapeHTML(article.category)}</div>
+  const normalizeTitle = title =>
+    String(title || "").trim().toLowerCase();
+
+  let onlineArticles = [];
+
+  // Fetch published articles from Supabase
+  try {
+
+    if (!window.supabase || !cfg ||
+        !cfg.SUPABASE_URL ||
+        !cfg.SUPABASE_ANON_KEY) {
+      throw new Error("Supabase configuration is missing.");
+    }
+
+    const db = window.supabase.createClient(
+      cfg.SUPABASE_URL,
+      cfg.SUPABASE_ANON_KEY
+    );
+
+    const { data, error } = await db
+      .from("articles")
+      .select("*")
+      .eq("published", true)
+      .order("featured", { ascending: false })
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    onlineArticles = data || [];
+
+  } catch (error) {
+
+    console.error("Supabase article loading:", error);
+
+  }
+
+  // Keep older sample articles until they are
+  // added to the online database.
+  const oldArticles =
+    typeof articles !== "undefined" ? articles : [];
+
+  const onlineTitles = new Set(
+    onlineArticles.map(a => normalizeTitle(a.title))
+  );
+
+  const backupArticles = oldArticles.filter(a =>
+    a.published !== false &&
+    !onlineTitles.has(normalizeTitle(a.title))
+  );
+
+  const allArticles = [
+    ...onlineArticles,
+    ...backupArticles
+  ].sort((a, b) =>
+    Number(Boolean(b.featured)) -
+    Number(Boolean(a.featured))
+  );
+
+  if (allArticles.length === 0) {
+    grid.innerHTML = "<p>No articles published yet.</p>";
+    return;
+  }
+
+  // Display articles
+  grid.innerHTML = allArticles.map(article => {
+
+    const paragraphs = Array.isArray(article.body)
+      ? article.body
+      : String(article.body || "")
+          .split(/\n\s*\n/)
+          .filter(Boolean);
+
+    const date = article.date || "";
+    const readTime =
+      article.read_time || article.readTime || "";
+
+    return `
+      <article class="article">
+
+        <div class="tag">
+          ${escapeHTML(article.category)}
+        </div>
+
         <h3>${escapeHTML(article.title)}</h3>
-        <p>${escapeHTML(article.excerpt)}</p>
-        <span class="read">Read full article ↓</span>
-      </summary>
 
-      <div class="article-content">
-        ${(Array.isArray(article.body) ? article.body : [article.body])
-          .map(paragraph => `<p>${escapeHTML(paragraph)}</p>`)
-          .join("")}
-        <small>${escapeHTML(article.date)} · ${escapeHTML(article.readTime)}</small>
-      </div>
-    </details>
-  `).join("")
-  : "<p>No articles published yet.</p>";
+        <p>${escapeHTML(article.excerpt)}</p>
+
+        <small>
+          ${escapeHTML(date)} · ${escapeHTML(readTime)}
+        </small>
+
+        <details>
+          <summary class="read">Read full article →</summary>
+
+          <div class="article-content">
+            ${paragraphs.map(p =>
+              `<p>${escapeHTML(p)}</p>`
+            ).join("")}
+          </div>
+        </details>
+
+      </article>
+    `;
+
+  }).join("");
+
+})();
 </script>
 </body>
 </html>
